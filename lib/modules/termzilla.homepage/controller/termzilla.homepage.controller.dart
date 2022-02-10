@@ -21,7 +21,7 @@ class TermzillaHomePageController extends ControllerMVC {
         const TermzillaSSHPageView(),
         Container(
           color: Colors.white,
-          child: Center(
+          child: const Center(
             child: Text(
               'Page\n   2',
               style: TextStyle(fontSize: 35),
@@ -30,7 +30,7 @@ class TermzillaHomePageController extends ControllerMVC {
         ),
         Container(
           color: Colors.white,
-          child: Center(
+          child: const Center(
             child: Text(
               'Page\n   3',
               style: TextStyle(fontSize: 35),
@@ -39,7 +39,7 @@ class TermzillaHomePageController extends ControllerMVC {
         ),
         Container(
           color: Colors.white,
-          child: Center(
+          child: const Center(
             child: Text(
               'Page\n   4',
               style: TextStyle(fontSize: 35),
@@ -48,7 +48,7 @@ class TermzillaHomePageController extends ControllerMVC {
         ),
         Container(
           color: Colors.white,
-          child: Center(
+          child: const Center(
             child: Text(
               'Page\n   5',
               style: TextStyle(fontSize: 35),

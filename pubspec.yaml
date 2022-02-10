@@ -39,6 +39,7 @@ dependencies:
   xterm: ^2.6.0
   dartssh2: ^2.4.4
   tabbed_view: ^1.10.0
+  line_awesome_flutter: ^2.0.0
 
 dev_dependencies:
   flutter_test:

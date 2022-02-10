@@ -1,7 +1,8 @@
 import 'package:easy_sidemenu/easy_sidemenu.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:termzilla/modules/termzilla.connections/view/termzilla.connections.view.dart';
 import 'package:termzilla/modules/termzilla.homepage/controller/termzilla.homepage.controller.dart';
 
 class TermzillaHomePageView extends StatefulWidget {
@@ -23,26 +24,16 @@ class _TermzillaHomePageViewState extends StateMVC<TermzillaHomePageView> {
     return Scaffold(
       appBar: AppBar(actions: <Widget>[
         IconButton(
-          icon: const Icon(Icons.settings),
-          tooltip: 'Settings',
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return Scaffold(
-                  appBar: AppBar(
-                    title: const Text('Next page'),
-                  ),
-                  body: const Center(
-                    child: Text(
-                      'This is the next page',
-                      style: TextStyle(fontSize: 24),
-                    ),
-                  ),
-                );
-              },
-            ));
-          },
-        )
+            icon: const Icon(LineAwesomeIcons.plug),
+            tooltip: 'Connections',
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const TermzillaConnectionsView();
+                },
+              );
+            })
       ]),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -55,18 +46,11 @@ class _TermzillaHomePageViewState extends StateMVC<TermzillaHomePageView> {
                 displayMode: SideMenuDisplayMode.auto,
                 hoverColor: Colors.blue[100],
                 selectedColor: Theme.of(context).primaryColor,
-                selectedTitleTextStyle: TextStyle(color: Colors.white),
+                selectedTitleTextStyle: const TextStyle(color: Colors.white),
+                iconSize: 24,
                 selectedIconColor: Colors.white,
               ),
               items: [
-                SideMenuItem(
-                  priority: 0,
-                  title: 'Terminal',
-                  onTap: () {
-                    _pageController.page.jumpToPage(0);
-                  },
-                  icon: Icons.terminal,
-                ),
                 SideMenuItem(
                   priority: 1,
                   title: 'Users',
@@ -75,6 +59,13 @@ class _TermzillaHomePageViewState extends StateMVC<TermzillaHomePageView> {
                   },
                   icon: Icons.supervisor_account,
                 ),
+                SideMenuItem(
+                    priority: 0,
+                    title: 'Terminal',
+                    onTap: () {
+                      _pageController.page.jumpToPage(0);
+                    },
+                    icon: LineAwesomeIcons.terminal),
                 SideMenuItem(
                   priority: 2,
                   title: 'Files',
