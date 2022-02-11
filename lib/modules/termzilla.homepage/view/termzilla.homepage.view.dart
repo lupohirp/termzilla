@@ -4,6 +4,7 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:termzilla/modules/termzilla.connections/view/termzilla.connections.view.dart';
 import 'package:termzilla/modules/termzilla.homepage/controller/termzilla.homepage.controller.dart';
+import 'package:termzilla/shared/model/termzilla.connectioninfo.model.dart';
 
 class TermzillaHomePageView extends StatefulWidget {
   const TermzillaHomePageView({Key? key}) : super(key: key);
@@ -23,17 +24,53 @@ class _TermzillaHomePageViewState extends StateMVC<TermzillaHomePageView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(actions: <Widget>[
-        IconButton(
-            icon: const Icon(LineAwesomeIcons.plug),
-            tooltip: 'Connections',
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return const TermzillaConnectionsView();
-                },
-              );
-            })
+        Padding(
+          padding: const EdgeInsets.only(right: 30),
+          child: Row(
+            children: [
+              DecoratedBox(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(5)),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: DropdownButton<ConnectionInfo>(
+                    value: _pageController.selectedConnectionInfo,
+                    underline: const SizedBox(),
+                    icon: const Icon(LineAwesomeIcons.plug),
+                    elevation: 16,
+                    onChanged: (ConnectionInfo? newValue) {
+                      setState(() {
+                        _pageController.selectedConnectionInfo = newValue!;
+                      });
+                    },
+                    items: _pageController.connectionInfos
+                        .map<DropdownMenuItem<ConnectionInfo>>(
+                            (ConnectionInfo connectionInfo) {
+                      return DropdownMenuItem<ConnectionInfo>(
+                        value: connectionInfo,
+                        child: Text(connectionInfo.nameOfTheConnection),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 50),
+              IconButton(
+                  icon: const Icon(Icons.add),
+                  tooltip: 'Connections',
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const TermzillaConnectionsView();
+                      },
+                    );
+                  }),
+              const Text("Add new connection")
+            ],
+          ),
+        )
       ]),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.start,

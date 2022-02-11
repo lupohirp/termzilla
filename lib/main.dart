@@ -1,8 +1,20 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:termzilla/modules/termzilla.homepage/view/termzilla.homepage.view.dart';
+import 'package:termzilla/shared/helper/termzilla.helper.dart';
+import 'package:termzilla/shared/model/termzilla.connectioninfo.model.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  _initializeHive();
+
+  TermzillaHelper.encryptionKey =
+      base64Url.decode(const String.fromEnvironment("HIVE_KEY"));
+
   runApp(const TermzillaApp());
 }
 
@@ -19,4 +31,9 @@ class TermzillaApp extends StatelessWidget {
       home: const TermzillaHomePageView(),
     );
   }
+}
+
+Future<void> _initializeHive() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(ConnectionInfoAdapter());
 }

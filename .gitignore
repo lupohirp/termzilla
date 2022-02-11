@@ -1,0 +1,14 @@
+
+.dart_tool/build/entrypoint/
+
+.dart_tool/
+
+.vscode/
+
+build/
+
+.flutter-plugins
+
+.flutter-plugins-dependencies
+
+.packages

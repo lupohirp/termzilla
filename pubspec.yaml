@@ -40,8 +40,13 @@ dependencies:
   dartssh2: ^2.4.4
   tabbed_view: ^1.10.0
   line_awesome_flutter: ^2.0.0
+  hive: ^2.0.5
+  hive_flutter: ^1.1.0
+  form_builder_validators: ^7.4.0
 
 dev_dependencies:
+  hive_generator: ^1.1.2
+  build_runner: ^2.1.7
   flutter_test:
     sdk: flutter
 
