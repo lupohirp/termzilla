@@ -30,41 +30,95 @@ class TermzillaConnectionsController extends ControllerMVC {
 
   bool shouldUseIdRSA = false;
 
+  ConnectionInfo? connectionInfoToUpdate;
+
   void onShouldUseIdRSA(bool? newValue) => setState(() {
         shouldUseIdRSA = newValue!;
       });
 
+  @override
+  void dispose() {
+    connectionInfoToUpdate = null;
+    nameOfTheConnectionController.text = "";
+    ipAddressController.text = "";
+    portController.text = "";
+    usernameController.text = "";
+    passwordController.text = "";
+    super.dispose();
+  }
+
+  updateConnection(ConnectionInfo connectionInfo) {
+    nameOfTheConnectionController.text = connectionInfo.nameOfTheConnection;
+    ipAddressController.text = connectionInfo.ipAddress;
+    portController.text = connectionInfo.port;
+    usernameController.text = connectionInfo.username;
+    passwordController.text = connectionInfo.password;
+
+    connectionInfoToUpdate = connectionInfo;
+  }
+
   Future<void> saveConnection(BuildContext context) async {
     if (formKey.currentState!.validate()) {
-      String nameOfTheConnection = nameOfTheConnectionController.text;
-      String ipAddress = ipAddressController.text;
-      String port = portController.text;
-      String username = usernameController.text;
-      String password = passwordController.text;
+      if (connectionInfoToUpdate == null) {
+        await _saveConnection();
+      } else {
+        await Hive.openBox<ConnectionInfo>(HiveConst.connectionList,
+            encryptionCipher: HiveAesCipher(TermzillaHelper.encryptionKey));
 
-      if (port.isEmpty) {
-        port = "22";
+        Box<ConnectionInfo> connectionInfoBox =
+            Hive.box<ConnectionInfo>(HiveConst.connectionList);
+
+        int objectIndex = 0;
+        for (var i = 0; i < connectionInfoBox.length; i++) {
+          ConnectionInfo connectionInfo = connectionInfoBox.getAt(i)!;
+          if (connectionInfo.nameOfTheConnection ==
+              connectionInfoToUpdate?.nameOfTheConnection) {
+            connectionInfo.ipAddress = ipAddressController.text;
+            connectionInfo.nameOfTheConnection =
+                nameOfTheConnectionController.text;
+            connectionInfo.password = passwordController.text;
+            connectionInfo.port = portController.text;
+            connectionInfo.username = usernameController.text;
+            await connectionInfoBox.putAt(i, connectionInfo);
+            await connectionInfoBox.close();
+            break;
+          }
+        }
       }
-
-      ConnectionInfo connectionInfo = ConnectionInfo()
-        ..ipAddress = ipAddress
-        ..nameOfTheConnection = nameOfTheConnection
-        ..port = port
-        ..username = username
-        ..password = password;
-
-      await Hive.openBox<ConnectionInfo>(HiveConst.connectionList,
-          encryptionCipher: HiveAesCipher(TermzillaHelper.encryptionKey));
-      Box<ConnectionInfo> connectionInfoBox =
-          Hive.box<ConnectionInfo>(HiveConst.connectionList);
-
-      await connectionInfoBox.add(connectionInfo);
-
-      await connectionInfoBox.close();
-
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Connection saved succesfully"),act
       Navigator.of(context).pop();
 
-      TermzillaHomePageController().triggerReloadStateFromConnectionsView();
+      await TermzillaHomePageController()
+          .triggerReloadStateFromConnectionsView();
     }
+  }
+
+  Future<void> _saveConnection() async {
+    String nameOfTheConnection = nameOfTheConnectionController.text;
+    String ipAddress = ipAddressController.text;
+    String port = portController.text;
+    String username = usernameController.text;
+    String password = passwordController.text;
+
+    if (port.isEmpty) {
+      port = "22";
+    }
+
+    ConnectionInfo connectionInfo = ConnectionInfo()
+      ..ipAddress = ipAddress
+      ..nameOfTheConnection = nameOfTheConnection
+      ..port = port
+      ..username = username
+      ..password = password;
+
+    await Hive.openBox<ConnectionInfo>(HiveConst.connectionList,
+        encryptionCipher: HiveAesCipher(TermzillaHelper.encryptionKey));
+    Box<ConnectionInfo> connectionInfoBox =
+        Hive.box<ConnectionInfo>(HiveConst.connectionList);
+
+    await connectionInfoBox.add(connectionInfo);
+
+    await connectionInfoBox.close();
   }
 }
