@@ -32,9 +32,10 @@ class TermzillaHomePageController extends ControllerMVC {
     _loadPersonalConnections();
   }
 
-  void triggerReloadStateFromConnectionsView() {
-    _loadPersonalConnections();
-    setState(() {});
+  Future<void> triggerReloadStateFromConnectionsView() async {
+    connectionInfos.clear();
+    connectionInfos.add(selectedConnectionInfo);
+    await _loadPersonalConnections();
   }
 
   Future<void> _loadPersonalConnections() async {
@@ -48,7 +49,6 @@ class TermzillaHomePageController extends ControllerMVC {
     }
 
     await connectionInfosBox.close();
-
     setState(() {});
   }
 
