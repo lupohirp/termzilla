@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:legacy_progress_dialog/legacy_progress_dialog.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:termzilla/modules/termzilla.ssh/controller/termzilla.ssh.controller.dart';
 import 'package:termzilla/shared/model/termzilla.connectioninfo.model.dart';
 import 'package:xterm/xterm.dart';
@@ -37,7 +38,6 @@ class SSHTerminalBackend extends TerminalBackend {
   late SSHSession shell;
   @override
   void init() async {
-    // Use utf8.decoder to handle broken utf8 chunks
     final _sshOutput = StreamController<List<int>>();
     _sshOutput.stream.transform(utf8.decoder).listen(onWrite);
 
@@ -59,33 +59,45 @@ class SSHTerminalBackend extends TerminalBackend {
       shell = await client.shell();
     } on SocketException catch (e) {
       pd.dismiss();
-      TermzillaSSHPageController().removeConnectionTab(_selectedIndex);
-      if (_selectedIndex > 0) {
-        TermzillaSSHPageController().setConnectionTab(_selectedIndex - 1);
-      }
+      _handleTimeoutException(pd);
     }
+
+    TermzillaSSHPageController()
+        .openedSSHClients
+        .putIfAbsent(_selectedIndex, () => client);
 
     _sshOutput.addStream(shell.stdout); // listening for stdout
     _sshOutput.addStream(shell.stderr); // listening for stderr
-    // client = SSHClient(
-    //   hostport: Uri.parse(_host),
-    //   username: _username,
-    //   print: print,
-    //   termWidth: 80,
-    //   termHeight: 25,
-    //   termvar: 'xterm-256color',
-    //   onPasswordRequest: () => _password,
-    //   response: (data) {
-    //     _sshOutput.add(data);
-    //   },
-    //   success: () {
-    //     onWrite('connected.\n');
-    //   },
-    //   disconnected: () {
-    //     onWrite('disconnected.');
-    //     _outStream.close();
-    //   },
-    // );
+  }
+
+  void _handleTimeoutException(ProgressDialog pd) {
+    showDialog(
+        context: _parentBuildContext,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    TermzillaSSHPageController()
+                        .removeConnectionTab(_selectedIndex);
+                    if (_selectedIndex > 0) {
+                      TermzillaSSHPageController()
+                          .setConnectionTab(_selectedIndex - 1);
+                    }
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("OK"))
+            ],
+            content: Row(children: [
+              const Icon(LineAwesomeIcons.unlink),
+              const SizedBox(
+                width: 50,
+              ),
+              Text(
+                  "Unable to connect to ${_connectionInfo.ipAddress}. Please check if the address or port is correct or it is up and running")
+            ]),
+          );
+        });
   }
 
   @override

@@ -1,3 +1,6 @@
+import 'dart:collection';
+
+import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:tabbed_view/tabbed_view.dart';
@@ -16,6 +19,7 @@ class TermzillaSSHPageController extends ControllerMVC {
 
   List<TabData> tabs = List.empty(growable: true);
   late TabbedViewController tabbedViewController;
+  Map<int, SSHClient> openedSSHClients = HashMap();
 
   @override
   void initState() {
@@ -25,7 +29,13 @@ class TermzillaSSHPageController extends ControllerMVC {
 
   void removeConnectionTab(int indexToRemove) {
     tabs.removeAt(indexToRemove);
+    closeConnection(indexToRemove);
     setState(() {});
+  }
+
+  void closeConnection(int tabIndex) {
+    openedSSHClients[tabIndex]?.close();
+    openedSSHClients.remove(tabIndex);
   }
 
   void setConnectionTab(int index) {

@@ -20,7 +20,10 @@ class _TermzillaSSHPageViewState extends StateMVC<TermzillaSSHPageView> {
   @override
   Widget build(BuildContext context) {
     return TabbedViewTheme(
-        child: TabbedView(controller: _pageController.tabbedViewController),
+        child: TabbedView(
+            controller: _pageController.tabbedViewController,
+            onTabClose: (tabIndex, tabData) =>
+                _pageController.closeConnection(tabIndex)),
         data: TabbedViewThemeData.mobile(colorSet: Colors.blueGrey));
   }
 }
