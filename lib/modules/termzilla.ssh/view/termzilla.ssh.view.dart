@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
-import 'package:termzilla/modules/termzilla.ssh/controller/termzilla.homepage.controller.dart';
-import 'package:termzilla/modules/termzilla.ssh/utils/termzila.ssh.persistenttab.dart';
-import 'package:xterm/frontend/terminal_view.dart';
+import 'package:tabbed_view/tabbed_view.dart';
+import 'package:termzilla/modules/termzilla.ssh/controller/termzilla.ssh.controller.dart';
 
 class TermzillaSSHPageView extends StatefulWidget {
   const TermzillaSSHPageView({Key? key}) : super(key: key);
@@ -13,10 +11,16 @@ class TermzillaSSHPageView extends StatefulWidget {
 }
 
 class _TermzillaSSHPageViewState extends StateMVC<TermzillaSSHPageView> {
-  _TermzillaSSHPageViewState() : super(TermzillaSSHPageController());
+  _TermzillaSSHPageViewState() : super(TermzillaSSHPageController()) {
+    _pageController = controller as TermzillaSSHPageController;
+  }
+
+  late TermzillaSSHPageController _pageController;
 
   @override
   Widget build(BuildContext context) {
-    return const PersistantTab();
+    return TabbedViewTheme(
+        child: TabbedView(controller: _pageController.tabbedViewController),
+        data: TabbedViewThemeData.mobile(colorSet: Colors.blueGrey));
   }
 }

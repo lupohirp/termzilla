@@ -189,7 +189,7 @@ packages:
       name: dartssh2
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.4"
+    version: "2.5.0"
   easy_sidemenu:
     dependency: "direct main"
     description:
@@ -260,7 +260,7 @@ packages:
       name: form_builder_validators
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.4.0"
+    version: "7.6.1"
   frontend_server_client:
     dependency: transitive
     description:
@@ -288,7 +288,7 @@ packages:
       name: hive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.5"
+    version: "2.0.6"
   hive_flutter:
     dependency: "direct main"
     description:
@@ -345,6 +345,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.4.0"
+  legacy_progress_dialog:
+    dependency: "direct main"
+    description:
+      name: legacy_progress_dialog
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
   line_awesome_flutter:
     dependency: "direct main"
     description:
@@ -608,7 +615,7 @@ packages:
       name: tabbed_view
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.10.0"
+    version: "1.10.0+1"
   term_glyph:
     dependency: transitive
     description:

@@ -68,7 +68,6 @@ class TermzillaConnectionsController extends ControllerMVC {
         Box<ConnectionInfo> connectionInfoBox =
             Hive.box<ConnectionInfo>(HiveConst.connectionList);
 
-        int objectIndex = 0;
         for (var i = 0; i < connectionInfoBox.length; i++) {
           ConnectionInfo connectionInfo = connectionInfoBox.getAt(i)!;
           if (connectionInfo.nameOfTheConnection ==
@@ -85,9 +84,8 @@ class TermzillaConnectionsController extends ControllerMVC {
           }
         }
       }
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Connection saved succesfully"),act
-      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Connection saved succesfully")));
 
       await TermzillaHomePageController()
           .triggerReloadStateFromConnectionsView();

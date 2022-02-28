@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:legacy_progress_dialog/legacy_progress_dialog.dart';
+import 'package:termzilla/modules/termzilla.ssh/controller/termzilla.ssh.controller.dart';
 import 'package:termzilla/shared/model/termzilla.connectioninfo.model.dart';
 import 'package:xterm/xterm.dart';
 import 'package:dartssh2/dartssh2.dart';
@@ -13,14 +14,16 @@ class SSHTerminalBackend extends TerminalBackend {
   late SSHClient client;
   ConnectionInfo _connectionInfo;
   BuildContext _parentBuildContext;
+  int _selectedIndex;
 
   final _exitCodeCompleter = Completer<int>();
   final _outStream = StreamController<String>();
 
-  SSHTerminalBackend(
-      ConnectionInfo connectionInfo, BuildContext parentBuildContext)
+  SSHTerminalBackend(ConnectionInfo connectionInfo,
+      BuildContext parentBuildContext, int selectedIndex)
       : _connectionInfo = connectionInfo,
-        _parentBuildContext = parentBuildContext;
+        _parentBuildContext = parentBuildContext,
+        _selectedIndex = selectedIndex;
 
   void onWrite(String data) {
     _outStream.sink.add(data);
@@ -56,6 +59,10 @@ class SSHTerminalBackend extends TerminalBackend {
       shell = await client.shell();
     } on SocketException catch (e) {
       pd.dismiss();
+      TermzillaSSHPageController().removeConnectionTab(_selectedIndex);
+      if (_selectedIndex > 0) {
+        TermzillaSSHPageController().setConnectionTab(_selectedIndex - 1);
+      }
     }
 
     _sshOutput.addStream(shell.stdout); // listening for stdout

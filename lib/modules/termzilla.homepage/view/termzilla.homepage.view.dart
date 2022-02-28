@@ -4,6 +4,7 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:termzilla/modules/termzilla.connections/view/termzilla.connections.view.dart';
 import 'package:termzilla/modules/termzilla.homepage/controller/termzilla.homepage.controller.dart';
+import 'package:termzilla/modules/termzilla.ssh/controller/termzilla.ssh.controller.dart';
 import 'package:termzilla/shared/model/termzilla.connectioninfo.model.dart';
 
 class TermzillaHomePageView extends StatefulWidget {
@@ -40,9 +41,8 @@ class _TermzillaHomePageViewState extends StateMVC<TermzillaHomePageView> {
                     icon: const Icon(LineAwesomeIcons.plug),
                     elevation: 16,
                     onChanged: (ConnectionInfo? newValue) {
-                      setState(() {
-                        _pageController.selectedConnectionInfo = newValue!;
-                      });
+                      TermzillaSSHPageController()
+                          .addConnectionTab(newValue!, context);
                     },
                     items: _pageController.connectionInfos
                         .map<DropdownMenuItem<ConnectionInfo>>(
