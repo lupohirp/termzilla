@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="PlugProxyProjectComponent">
-    <option name="host" value="" />
-    <option name="hostPort" value="" />
-    <option name="localPort" value="" />
-    <option name="hexDump" />
-  </component>
-</project>

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:termzilla/modules/termzilla.homepage/controller/termzilla.homepage.controller.dart';
@@ -52,7 +53,7 @@ class TermzillaConnectionsController extends ControllerMVC {
     ipAddressController.text = connectionInfo.ipAddress;
     portController.text = connectionInfo.port;
     usernameController.text = connectionInfo.username;
-    passwordController.text = connectionInfo.password;
+    passwordController.text = connectionInfo.password!;
 
     connectionInfoToUpdate = connectionInfo;
   }
@@ -72,14 +73,7 @@ class TermzillaConnectionsController extends ControllerMVC {
           ConnectionInfo connectionInfo = connectionInfoBox.getAt(i)!;
           if (connectionInfo.nameOfTheConnection ==
               connectionInfoToUpdate?.nameOfTheConnection) {
-            connectionInfo.ipAddress = ipAddressController.text;
-            connectionInfo.nameOfTheConnection =
-                nameOfTheConnectionController.text;
-            connectionInfo.password = passwordController.text;
-            connectionInfo.port = portController.text;
-            connectionInfo.username = usernameController.text;
-            await connectionInfoBox.putAt(i, connectionInfo);
-            await connectionInfoBox.close();
+            await _updateThatConnection(connectionInfo, connectionInfoBox, i);
             break;
           }
         }
@@ -92,12 +86,33 @@ class TermzillaConnectionsController extends ControllerMVC {
     }
   }
 
+  Future<void> _updateThatConnection(ConnectionInfo connectionInfo,
+      Box<ConnectionInfo> connectionInfoBox, int i) async {
+    connectionInfo.ipAddress = ipAddressController.text;
+    connectionInfo.nameOfTheConnection = nameOfTheConnectionController.text;
+    if (passwordController.text.isNotEmpty) {
+      await const FlutterSecureStorage()
+          .write(key: connectionInfo.password!, value: passwordController.text);
+    }
+    connectionInfo.port = portController.text;
+    connectionInfo.username = usernameController.text;
+    connectionInfo.rsakey = "";
+    await connectionInfoBox.putAt(i, connectionInfo);
+    await connectionInfoBox.close();
+  }
+
   Future<void> _saveConnection() async {
     String nameOfTheConnection = nameOfTheConnectionController.text;
     String ipAddress = ipAddressController.text;
     String port = portController.text;
     String username = usernameController.text;
-    String password = passwordController.text;
+    String? password;
+    if (passwordController.text.isNotEmpty) {
+      password = Uuid().generateV4();
+
+      await const FlutterSecureStorage()
+          .write(key: password, value: passwordController.text);
+    }
 
     if (port.isEmpty) {
       port = "22";
@@ -108,7 +123,8 @@ class TermzillaConnectionsController extends ControllerMVC {
       ..nameOfTheConnection = nameOfTheConnection
       ..port = port
       ..username = username
-      ..password = password;
+      ..password = password
+      ..rsakey = "";
 
     await Hive.openBox<ConnectionInfo>(HiveConst.connectionList,
         encryptionCipher: HiveAesCipher(TermzillaHelper.encryptionKey));

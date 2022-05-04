@@ -59,7 +59,7 @@ class _TermzillaConnectionsViewState
                           onTap: () => _pageController.updateConnection(e),
                           title: e.nameOfTheConnection,
                           priority: 1,
-                          icon: LineAwesomeIcons.plug))
+                          icon: Icon(LineAwesomeIcons.plug)))
                       .toList()),
               ConnectionFormInfo(pageController: _pageController),
             ]),
@@ -92,7 +92,7 @@ class ConnectionFormInfo extends StatelessWidget {
                 padding: const EdgeInsets.all(36.0),
                 child: TextFormField(
                   controller: _pageController.nameOfTheConnectionController,
-                  validator: FormBuilderValidators.required(context,
+                  validator: FormBuilderValidators.required(
                       errorText: "Please enter a name for the connection"),
                   decoration: const InputDecoration(
                     hintText: 'Name of the connection',
@@ -111,9 +111,9 @@ class ConnectionFormInfo extends StatelessWidget {
                     child: TextFormField(
                       controller: _pageController.ipAddressController,
                       validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(context,
+                        FormBuilderValidators.required(
                             errorText: "Please enter a IPv4 address"),
-                        FormBuilderValidators.ip(context,
+                        FormBuilderValidators.ip(
                             errorText: "Please enter a valid IPv4 address")
                       ]),
                       decoration: const InputDecoration(
@@ -129,7 +129,7 @@ class ConnectionFormInfo extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 36),
                     child: TextFormField(
                       controller: _pageController.portController,
-                      validator: FormBuilderValidators.numeric(context,
+                      validator: FormBuilderValidators.numeric(
                           errorText: "Please enter a valid port number"),
                       decoration: const InputDecoration(
                           hintText: '22',
@@ -146,7 +146,7 @@ class ConnectionFormInfo extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 36),
                   child: TextFormField(
                     controller: _pageController.usernameController,
-                    validator: FormBuilderValidators.required(context,
+                    validator: FormBuilderValidators.required(
                         errorText: "Please enter a valid username"),
                     decoration: const InputDecoration(
                       hintText: 'Username',
@@ -162,6 +162,7 @@ class ConnectionFormInfo extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 36),
                     child: TextFormField(
+                      obscureText: true,
                       controller: _pageController.passwordController,
                       decoration: const InputDecoration(
                           hintText: 'Password',

@@ -94,7 +94,7 @@ class _TermzillaHomePageViewState extends StateMVC<TermzillaHomePageView> {
                   onTap: () {
                     _pageController.page.jumpToPage(1);
                   },
-                  icon: Icons.supervisor_account,
+                  icon: Icon(Icons.supervisor_account),
                 ),
                 SideMenuItem(
                     priority: 0,
@@ -102,14 +102,14 @@ class _TermzillaHomePageViewState extends StateMVC<TermzillaHomePageView> {
                     onTap: () {
                       _pageController.page.jumpToPage(0);
                     },
-                    icon: LineAwesomeIcons.terminal),
+                    icon: Icon(LineAwesomeIcons.terminal)),
                 SideMenuItem(
                   priority: 2,
                   title: 'Files',
                   onTap: () {
                     _pageController.page.jumpToPage(2);
                   },
-                  icon: Icons.file_copy_rounded,
+                  icon: Icon(Icons.file_copy_rounded),
                 ),
                 SideMenuItem(
                   priority: 3,
@@ -117,7 +117,7 @@ class _TermzillaHomePageViewState extends StateMVC<TermzillaHomePageView> {
                   onTap: () {
                     _pageController.page.jumpToPage(3);
                   },
-                  icon: Icons.download,
+                  icon: Icon(Icons.download),
                 ),
                 SideMenuItem(
                   priority: 4,
@@ -125,13 +125,13 @@ class _TermzillaHomePageViewState extends StateMVC<TermzillaHomePageView> {
                   onTap: () {
                     _pageController.page.jumpToPage(4);
                   },
-                  icon: Icons.settings,
+                  icon: Icon(Icons.settings),
                 ),
                 SideMenuItem(
                   priority: 6,
                   title: 'Exit',
                   onTap: () async {},
-                  icon: Icons.exit_to_app,
+                  icon: Icon(Icons.exit_to_app),
                 ),
               ],
             ),

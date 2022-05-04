@@ -21,13 +21,14 @@ class ConnectionInfoAdapter extends TypeAdapter<ConnectionInfo> {
       ..ipAddress = fields[1] as String
       ..port = fields[2] as String
       ..username = fields[3] as String
-      ..password = fields[4] as String;
+      ..password = fields[4] as String?
+      ..rsakey = fields[5] as String?;
   }
 
   @override
   void write(BinaryWriter writer, ConnectionInfo obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.nameOfTheConnection)
       ..writeByte(1)
@@ -37,7 +38,9 @@ class ConnectionInfoAdapter extends TypeAdapter<ConnectionInfo> {
       ..writeByte(3)
       ..write(obj.username)
       ..writeByte(4)
-      ..write(obj.password);
+      ..write(obj.password)
+      ..writeByte(5)
+      ..write(obj.rsakey);
   }
 
   @override

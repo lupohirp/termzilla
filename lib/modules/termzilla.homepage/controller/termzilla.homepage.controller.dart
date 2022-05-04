@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:termzilla/modules/termzilla.ssh/view/termzilla.ssh.view.dart';
@@ -45,6 +46,11 @@ class TermzillaHomePageController extends ControllerMVC {
         Hive.box<ConnectionInfo>(HiveConst.connectionList);
     for (var i = 0; i < connectionInfosBox.length; i++) {
       ConnectionInfo connectionInfo = connectionInfosBox.getAt(i)!;
+      if (connectionInfo.password != null &&
+          connectionInfo.password!.isNotEmpty) {
+        connectionInfo.password = await const FlutterSecureStorage()
+            .read(key: connectionInfo.password!);
+      }
       connectionInfos.add(connectionInfo);
     }
 

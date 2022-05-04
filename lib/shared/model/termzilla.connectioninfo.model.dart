@@ -17,5 +17,8 @@ class ConnectionInfo {
   late String username;
 
   @HiveField(4)
-  late String password;
+  late String? password;
+
+  @HiveField(5)
+  late String? rsakey;
 }
