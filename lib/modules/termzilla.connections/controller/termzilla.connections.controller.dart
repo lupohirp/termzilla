@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:termzilla/modules/termzilla.homepage/controller/termzilla.homepage.controller.dart';
 import 'package:termzilla/shared/const/termzilla.hive.const.dart';
@@ -60,6 +61,7 @@ class TermzillaConnectionsController extends ControllerMVC {
 
   Future<void> saveConnection(BuildContext context) async {
     if (formKey.currentState!.validate()) {
+      context.loaderOverlay.show();
       if (connectionInfoToUpdate == null) {
         await _saveConnection();
       } else {
@@ -78,8 +80,12 @@ class TermzillaConnectionsController extends ControllerMVC {
           }
         }
       }
+      context.loaderOverlay.hide();
+
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Connection saved succesfully")));
+
+      Navigator.of(context).pop();
 
       await TermzillaHomePageController()
           .triggerReloadStateFromConnectionsView();
