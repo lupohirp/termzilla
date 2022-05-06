@@ -1,4 +1,3 @@
-import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -7,98 +6,88 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:termzilla/modules/termzilla.connections/controller/termzilla.connections.controller.dart';
 import 'package:termzilla/modules/termzilla.homepage/controller/termzilla.homepage.controller.dart';
 
-class TermzillaConnectionsView extends StatefulWidget {
-  const TermzillaConnectionsView({Key? key}) : super(key: key);
+class TermzillaConnectionsEditView extends StatefulWidget {
+  const TermzillaConnectionsEditView({Key? key}) : super(key: key);
 
   @override
-  _TermzillaConnectionsViewState createState() =>
-      _TermzillaConnectionsViewState();
+  _TermzillaConnectionsEditViewState createState() =>
+      _TermzillaConnectionsEditViewState();
 }
 
-class _TermzillaConnectionsViewState
-    extends StateMVC<TermzillaConnectionsView> {
-  _TermzillaConnectionsViewState() : super(TermzillaConnectionsController()) {
+class _TermzillaConnectionsEditViewState
+    extends StateMVC<TermzillaConnectionsEditView> {
+  _TermzillaConnectionsEditViewState()
+      : super(TermzillaConnectionsController()) {
     _pageController = controller as TermzillaConnectionsController;
   }
 
   late TermzillaConnectionsController _pageController;
 
+  int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      child: SizedBox(
-        height: 600.0,
-        width: 600.0,
-        child: Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              title: const Center(child: Text("Add a new connection")),
-            ),
-            body: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  height: 400,
-                  width: 200,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount:
-                        TermzillaHomePageController().connectionInfos.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(TermzillaHomePageController()
-                            .connectionInfos[index]
-                            .nameOfTheConnection),
-                      );
-                    },
-                  ),
-                )
-              ],
-            )),
-      ),
-    );
-    // return AlertDialog(
-    //   elevation: 20,
-    //   contentPadding: EdgeInsets.zero,
-    //   content: Builder(builder: ((context) {
-    //     return SizedBox(
-    //       height: MediaQuery.of(context).size.height < 1000
-    //           ? MediaQuery.of(context).size.height > 900 &&
-    //                   MediaQuery.of(context).size.height < 1000
-    //               ? MediaQuery.of(context).size.height / 1.8
-    //               : MediaQuery.of(context).size.height / 1.5
-    //           : MediaQuery.of(context).size.height / 2,
-    //       width: MediaQuery.of(context).size.width * 0.60,
-    //       child: Scaffold(
-    //         appBar: AppBar(
-    //           automaticallyImplyLeading: false,
-    //           title: const Center(child: Text("Add a new connection")),
-    //         ),
-    //         body: Row(children: [
-    //           SideMenu(
-    //               controller: PageController(),
-    //               style: SideMenuStyle(
-    //                 hoverColor: Colors.blue[100],
-    //                 selectedColor: Theme.of(context).primaryColor,
-    //                 selectedTitleTextStyle:
-    //                     const TextStyle(color: Colors.white),
-    //                 iconSize: 24,
-    //                 selectedIconColor: Colors.white,
-    //               ),
-    //               items: TermzillaHomePageController()
-    //                   .connectionInfos
-    //                   .map((e) => SideMenuItem(
-    //                       onTap: () => _pageController.updateConnection(e),
-    //                       title: e.nameOfTheConnection,
-    //                       priority: 1,
-    //                       icon: const Icon(LineAwesomeIcons.plug)))
-    //                   .toList()),
-    //           ConnectionFormInfo(pageController: _pageController),
-    //         ]),
-    //       ),
-    //     );
-    //   })),
-    // );
+        child: SizedBox(
+            height: 600.0,
+            width: 800.0,
+            child: Scaffold(
+              appBar: AppBar(
+                automaticallyImplyLeading: false,
+                actions: [
+                  IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: const Icon(Icons.close))
+                ],
+                title: const Center(child: Text("Edit a connection")),
+              ),
+              body: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(
+                      width: 200,
+                      height: 600,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: TermzillaHomePageController()
+                            .connectionInfos
+                            .length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            leading: Icon(LineAwesomeIcons.plug,
+                                color: index == _selectedIndex
+                                    ? Colors.white
+                                    : Colors.black),
+                            selected: index == _selectedIndex,
+                            shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(32),
+                                    bottomRight: Radius.circular(32))),
+                            selectedTileColor: Colors.blue,
+                            onTap: () {
+                              setState(() {
+                                _selectedIndex = index;
+                              });
+                              _pageController.updateConnection(
+                                  TermzillaHomePageController()
+                                      .connectionInfos[index]);
+                            },
+                            title: Text(
+                              TermzillaHomePageController()
+                                  .connectionInfos[index]
+                                  .nameOfTheConnection,
+                              style: TextStyle(
+                                  color: _selectedIndex == index
+                                      ? Colors.white
+                                      : Colors.black),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    ConnectionFormInfo(pageController: _pageController)
+                  ]),
+            )));
   }
 }
 

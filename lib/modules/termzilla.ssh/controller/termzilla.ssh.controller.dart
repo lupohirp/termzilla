@@ -1,13 +1,13 @@
 import 'dart:collection';
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:tabbed_view/tabbed_view.dart';
-import 'package:termzilla/modules/termzilla.ssh/utils/termzilla.ssh.terminalbackend.dart';
 import 'package:termzilla/shared/model/termzilla.connectioninfo.model.dart';
-import 'package:xterm/flutter.dart';
-import 'package:xterm/terminal/terminal.dart';
+import 'package:xterm/next.dart';
 
 class TermzillaSSHPageController extends ControllerMVC {
   factory TermzillaSSHPageController([StateMVC? state]) =>
@@ -57,20 +57,63 @@ class TermzillaSSHPageController extends ControllerMVC {
     tabbedViewController.selectedIndex = index;
   }
 
-  void addConnectionTab(
-      ConnectionInfo connectionInfo, BuildContext buildContext) {
+  Future<void> addConnectionTab(
+      ConnectionInfo connectionInfo, BuildContext buildContext) async {
+    Terminal terminal = await _initializeTerminal(connectionInfo);
+
     tabs.add(TabData(
         text: connectionInfo.nameOfTheConnection,
-        content: SafeArea(
-            child: TerminalView(
-                terminal: Terminal(
-                    maxLines: 10000,
-                    backend: SSHTerminalBackend(
-                        connectionInfo, buildContext, tabs.length)))),
+        content: SafeArea(child: TerminalView(terminal)),
         keepAlive: true));
 
     tabbedViewController.selectedIndex = tabs.length - 1;
 
     setState(() {});
+  }
+
+  Future<Terminal> _initializeTerminal(ConnectionInfo connectionInfo) async {
+    final terminal = Terminal();
+
+    final client = SSHClient(
+      await SSHSocket.connect(
+          connectionInfo.ipAddress, int.tryParse(connectionInfo.port)!),
+      username: connectionInfo.username,
+      onPasswordRequest: () => connectionInfo.password,
+    );
+
+    var title = connectionInfo.ipAddress;
+
+    final session = await client.shell(
+      pty: SSHPtyConfig(
+        width: terminal.viewWidth,
+        height: terminal.viewHeight,
+      ),
+    );
+
+    terminal.buffer.clear();
+    terminal.buffer.setCursor(0, 0);
+
+    terminal.onTitleChange = (title) {
+      setState(() => title = title);
+    };
+
+    terminal.onResize = (width, height, pixelWidth, pixelHeight) {
+      session.resizeTerminal(width, height, pixelWidth, pixelHeight);
+    };
+
+    terminal.onOutput = (data) {
+      session.write(utf8.encode(data) as Uint8List);
+    };
+
+    session.stdout
+        .cast<List<int>>()
+        .transform(const Utf8Decoder())
+        .listen(terminal.write);
+
+    session.stderr
+        .cast<List<int>>()
+        .transform(const Utf8Decoder())
+        .listen(terminal.write);
+    return terminal;
   }
 }

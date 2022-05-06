@@ -2,7 +2,8 @@ import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
-import 'package:termzilla/modules/termzilla.connections/view/termzilla.connections.view.dart';
+import 'package:termzilla/modules/termzilla.connections/view/termzilla.connections.view.add.dart';
+import 'package:termzilla/modules/termzilla.connections/view/termzilla.connections.view.edit.dart';
 import 'package:termzilla/modules/termzilla.homepage/controller/termzilla.homepage.controller.dart';
 import 'package:termzilla/modules/termzilla.ssh/controller/termzilla.ssh.controller.dart';
 import 'package:termzilla/shared/model/termzilla.connectioninfo.model.dart';
@@ -56,18 +57,35 @@ class _TermzillaHomePageViewState extends StateMVC<TermzillaHomePageView> {
                 ),
               ),
               const SizedBox(width: 50),
-              IconButton(
-                  icon: const Icon(Icons.add),
-                  tooltip: 'Connections',
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const TermzillaConnectionsView();
-                      },
-                    );
-                  }),
-              const Text("Add new connection")
+              InkWell(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const TermzillaConnectionsAddView();
+                    },
+                  );
+                },
+                child: Row(children: const [
+                  Icon(Icons.add),
+                  Text("Add new connection")
+                ]),
+              ),
+              const SizedBox(width: 50),
+              InkWell(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const TermzillaConnectionsEditView();
+                    },
+                  );
+                },
+                child: Row(children: const [
+                  Icon(Icons.edit),
+                  Text("Edit your connections")
+                ]),
+              ),
             ],
           ),
         )
