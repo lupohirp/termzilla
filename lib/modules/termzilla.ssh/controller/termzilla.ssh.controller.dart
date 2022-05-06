@@ -113,13 +113,13 @@ class TermzillaSSHPageController extends ControllerMVC {
       context: state!.context,
       backgroundColor: Colors.white,
       textColor: Colors.black,
-      loadingText: "Trying to connect to ${connectionInfo.ipAddress}",
+      loadingText: "Trying to connect to ${connectionInfo.ipAddress!}",
     );
     try {
       pd.show();
       final client = SSHClient(
         await SSHSocket.connect(
-            connectionInfo.ipAddress, int.tryParse(connectionInfo.port)!),
+            connectionInfo.ipAddress!, int.tryParse(connectionInfo.port)!),
         username: connectionInfo.username,
         onPasswordRequest: () => connectionInfo.password,
       );

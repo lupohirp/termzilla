@@ -186,7 +186,7 @@ class ConnectionFormInfo extends StatelessWidget {
                   height: 40,
                   child: ElevatedButton(
                     child: const Text("Save"),
-                    onPressed: () => _pageController.saveConnection(context),
+                    onPressed: () => _pageController.saveConnection(),
                   ),
                 ),
               )

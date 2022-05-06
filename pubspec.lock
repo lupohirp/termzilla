@@ -748,11 +748,13 @@ packages:
     source: hosted
     version: "0.2.0+1"
   xterm:
-    dependency: "direct main"
+    dependency: "direct overridden"
     description:
-      name: xterm
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: v3
+      resolved-ref: c65384e160d011617bcb7b3c77d3d65b299698b0
+      url: "https://github.com/lupohirp/xterm.dart.git"
+    source: git
     version: "3.0.6-alpha"
   yaml:
     dependency: transitive

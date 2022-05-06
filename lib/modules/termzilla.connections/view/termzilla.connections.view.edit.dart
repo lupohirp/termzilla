@@ -28,7 +28,7 @@ class _TermzillaConnectionsEditViewState
 
   late TermzillaConnectionsController _pageController;
 
-  int _selectedIndex = 0;
+  int _selectedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -49,41 +49,46 @@ class _TermzillaConnectionsEditViewState
               body: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    SizedBox(
-                      width: 200,
-                      height: 600,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: widget._userConnectionInfos.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            leading: Icon(LineAwesomeIcons.plug,
-                                color: index == _selectedIndex
-                                    ? Colors.white
-                                    : Colors.black),
-                            selected: index == _selectedIndex,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(32),
-                                    bottomRight: Radius.circular(32))),
-                            selectedTileColor: Colors.blue,
-                            onTap: () {
-                              setState(() {
-                                _selectedIndex = index;
-                              });
-                              _pageController.updateConnection(
-                                  widget._userConnectionInfos[index]);
-                            },
-                            title: Text(
-                              widget._userConnectionInfos[index]
-                                  .nameOfTheConnection,
-                              style: TextStyle(
-                                  color: _selectedIndex == index
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16, right: 16),
+                      child: SizedBox(
+                        width: 200,
+                        height: 600,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: widget._userConnectionInfos.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              leading: Icon(LineAwesomeIcons.plug,
+                                  color: index == _selectedIndex
                                       ? Colors.white
                                       : Colors.black),
-                            ),
-                          );
-                        },
+                              selected: index == _selectedIndex,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(32),
+                                      bottomRight: Radius.circular(32))),
+                              selectedTileColor: Colors.blue,
+                              onTap: () {
+                                setState(() {
+                                  _pageController.textFieldsMustBeEnabled =
+                                      true;
+                                  _selectedIndex = index;
+                                });
+                                _pageController.updateConnection(
+                                    widget._userConnectionInfos[index]);
+                              },
+                              title: Text(
+                                widget._userConnectionInfos[index]
+                                    .nameOfTheConnection,
+                                style: TextStyle(
+                                    color: _selectedIndex == index
+                                        ? Colors.white
+                                        : Colors.black),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                     ConnectionFormInfo(pageController: _pageController)
@@ -114,6 +119,8 @@ class ConnectionFormInfo extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(36.0),
                   child: TextFormField(
+                    onChanged: (value) => _pageController.enableSaveButton(),
+                    enabled: _pageController.textFieldsMustBeEnabled,
                     controller: _pageController.nameOfTheConnectionController,
                     validator: FormBuilderValidators.required(
                         errorText: "Please enter a name for the connection"),
@@ -132,6 +139,9 @@ class ConnectionFormInfo extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 36),
                       child: TextFormField(
+                        onChanged: (value) =>
+                            _pageController.enableSaveButton(),
+                        enabled: _pageController.textFieldsMustBeEnabled,
                         controller: _pageController.ipAddressController,
                         validator: FormBuilderValidators.compose([
                           FormBuilderValidators.required(
@@ -151,6 +161,9 @@ class ConnectionFormInfo extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 36),
                       child: TextFormField(
+                        onChanged: (value) =>
+                            _pageController.enableSaveButton(),
+                        enabled: _pageController.textFieldsMustBeEnabled,
                         controller: _pageController.portController,
                         validator: FormBuilderValidators.numeric(
                             errorText: "Please enter a valid port number"),
@@ -168,6 +181,8 @@ class ConnectionFormInfo extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 36),
                     child: TextFormField(
+                      onChanged: (value) => _pageController.enableSaveButton(),
+                      enabled: _pageController.textFieldsMustBeEnabled,
                       controller: _pageController.usernameController,
                       validator: FormBuilderValidators.required(
                           errorText: "Please enter a valid username"),
@@ -185,6 +200,9 @@ class ConnectionFormInfo extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 36),
                       child: TextFormField(
+                        onChanged: (value) =>
+                            _pageController.enableSaveButton(),
+                        enabled: _pageController.textFieldsMustBeEnabled,
                         obscureText: true,
                         controller: _pageController.passwordController,
                         decoration: const InputDecoration(
@@ -201,6 +219,9 @@ class ConnectionFormInfo extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 36),
                       child: TextFormField(
+                        onChanged: (value) =>
+                            _pageController.enableSaveButton(),
+                        enabled: _pageController.textFieldsMustBeEnabled,
                         decoration: const InputDecoration(
                             hintText: 'Password',
                             helperText: 'Password',
@@ -225,16 +246,33 @@ class ConnectionFormInfo extends StatelessWidget {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SizedBox(
-                  width: 100,
-                  height: 40,
-                  child: ElevatedButton(
-                    child: const Text("Save"),
-                    onPressed: () => _pageController.saveConnection(context),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: SizedBox(
+                      width: 100,
+                      height: 40,
+                      child: ElevatedButton(
+                        child: const Text("Save"),
+                        onPressed: _pageController.saveButtonShouldBeEnabled
+                            ? () => _pageController.saveConnection()
+                            : null,
+                      ),
+                    ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: SizedBox(
+                      width: 100,
+                      height: 40,
+                      child: ElevatedButton(
+                          child: const Text("Delete"),
+                          onPressed: () => _pageController.deleteConnection()),
+                    ),
+                  )
+                ],
               )
             ],
           ),

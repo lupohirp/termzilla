@@ -8,7 +8,7 @@ class ConnectionInfo {
   late String nameOfTheConnection;
 
   @HiveField(1)
-  late String ipAddress;
+  late String? ipAddress;
 
   @HiveField(2)
   late String port;

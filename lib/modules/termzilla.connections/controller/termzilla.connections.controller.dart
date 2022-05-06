@@ -32,11 +32,22 @@ class TermzillaConnectionsController extends ControllerMVC {
 
   bool shouldUseIdRSA = false;
 
+  bool saveButtonShouldBeEnabled = false;
+
+  bool textFieldsMustBeEnabled = false;
+
   ConnectionInfo? connectionInfoToUpdate;
 
   void onShouldUseIdRSA(bool? newValue) => setState(() {
+        saveButtonShouldBeEnabled = true;
         shouldUseIdRSA = newValue!;
       });
+
+  void enableSaveButton() {
+    setState(() {
+      saveButtonShouldBeEnabled = true;
+    });
+  }
 
   @override
   void dispose() {
@@ -49,21 +60,53 @@ class TermzillaConnectionsController extends ControllerMVC {
     super.dispose();
   }
 
-  updateConnection(ConnectionInfo connectionInfo) {
+  void updateConnection(ConnectionInfo connectionInfo) {
     nameOfTheConnectionController.text = connectionInfo.nameOfTheConnection;
-    ipAddressController.text = connectionInfo.ipAddress;
+    ipAddressController.text = connectionInfo.ipAddress!;
     portController.text = connectionInfo.port;
     usernameController.text = connectionInfo.username;
-    passwordController.text = connectionInfo.password!;
-
+    if (connectionInfo.password != null) {
+      passwordController.text = connectionInfo.password!;
+    }
     connectionInfoToUpdate = connectionInfo;
   }
 
-  void saveConnection(BuildContext context) async {
+  Future<void> deleteConnection() async {
+    state!.context.loaderOverlay.show();
+
+    await Hive.openBox<ConnectionInfo>(HiveConst.connectionList,
+        encryptionCipher: HiveAesCipher(TermzillaHelper.encryptionKey));
+    Box<ConnectionInfo> connectionInfoBox =
+        Hive.box<ConnectionInfo>(HiveConst.connectionList);
+
+    ConnectionInfo? connectionInfoToDelete =
+        connectionInfoBox.get(connectionInfoToUpdate!.nameOfTheConnection);
+
+    if (connectionInfoToDelete != null &&
+        connectionInfoToDelete.password != null &&
+        connectionInfoToDelete.password!.isNotEmpty) {
+      const FlutterSecureStorage()
+          .delete(key: connectionInfoToDelete.password!);
+    }
+
+    await connectionInfoBox.delete(connectionInfoToDelete!.nameOfTheConnection);
+    await connectionInfoBox.close();
+
+    state!.context.loaderOverlay.hide();
+
+    Navigator.of(state!.context).pop();
+
+    ScaffoldMessenger.of(TermzillaHomePageController().state!.context)
+        .showSnackBar(
+            const SnackBar(content: Text("Connection deleted succesfully")));
+    await TermzillaHomePageController().triggerReloadStateFromConnectionsView();
+  }
+
+  void saveConnection() async {
     if (formKey.currentState!.validate()) {
-      context.loaderOverlay.show();
+      state!.context.loaderOverlay.show();
       if (connectionInfoToUpdate == null) {
-        _saveConnection();
+        await _saveConnection();
       } else {
         await Hive.openBox<ConnectionInfo>(HiveConst.connectionList,
             encryptionCipher: HiveAesCipher(TermzillaHelper.encryptionKey));
@@ -75,25 +118,26 @@ class TermzillaConnectionsController extends ControllerMVC {
           ConnectionInfo connectionInfo = connectionInfoBox.getAt(i)!;
           if (connectionInfo.nameOfTheConnection ==
               connectionInfoToUpdate?.nameOfTheConnection) {
-            _updateThatConnection(connectionInfo, connectionInfoBox, i);
+            await _updateThatConnection(connectionInfo, connectionInfoBox);
             break;
           }
         }
       }
-      context.loaderOverlay.hide();
+      state!.context.loaderOverlay.hide();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Connection saved succesfully")));
+      Navigator.of(state!.context).pop();
 
-      Navigator.of(context).pop();
+      ScaffoldMessenger.of(TermzillaHomePageController().state!.context)
+          .showSnackBar(
+              const SnackBar(content: Text("Connection saved succesfully")));
 
       await TermzillaHomePageController()
           .triggerReloadStateFromConnectionsView();
     }
   }
 
-  void _updateThatConnection(ConnectionInfo connectionInfo,
-      Box<ConnectionInfo> connectionInfoBox, int i) async {
+  Future<void> _updateThatConnection(ConnectionInfo connectionInfo,
+      Box<ConnectionInfo> connectionInfoBox) async {
     connectionInfo.ipAddress = ipAddressController.text;
     connectionInfo.nameOfTheConnection = nameOfTheConnectionController.text;
     if (passwordController.text.isNotEmpty) {
@@ -103,11 +147,12 @@ class TermzillaConnectionsController extends ControllerMVC {
     connectionInfo.port = portController.text;
     connectionInfo.username = usernameController.text;
     connectionInfo.rsakey = "";
-    await connectionInfoBox.putAt(i, connectionInfo);
+    await connectionInfoBox.put(
+        connectionInfo.nameOfTheConnection, connectionInfo);
     await connectionInfoBox.close();
   }
 
-  void _saveConnection() async {
+  Future<void> _saveConnection() async {
     String nameOfTheConnection = nameOfTheConnectionController.text;
     String ipAddress = ipAddressController.text;
     String port = portController.text;
@@ -137,7 +182,8 @@ class TermzillaConnectionsController extends ControllerMVC {
     Box<ConnectionInfo> connectionInfoBox =
         Hive.box<ConnectionInfo>(HiveConst.connectionList);
 
-    await connectionInfoBox.add(connectionInfo);
+    await connectionInfoBox.put(
+        connectionInfo.nameOfTheConnection, connectionInfo);
 
     await connectionInfoBox.close();
   }

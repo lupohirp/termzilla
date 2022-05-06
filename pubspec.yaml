@@ -36,7 +36,6 @@ dependencies:
   cupertino_icons: ^1.0.4
   mvc_pattern: ^8.10.1+1
   easy_sidemenu: ^0.2.1
-  xterm: ^3.0.6-alpha
   dartssh2: ^2.6.1
   tabbed_view: ^1.12.0
   line_awesome_flutter: ^2.0.0
@@ -47,11 +46,18 @@ dependencies:
   flutter_secure_storage: ^5.0.2
   loader_overlay: ^2.0.6
 
+dependency_overrides:
+  xterm:
+   git:
+     url: https://github.com/lupohirp/xterm.dart.git
+     ref: v3
+
 dev_dependencies:
   hive_generator: ^1.1.2
   build_runner: ^2.1.10
   flutter_test:
     sdk: flutter
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
