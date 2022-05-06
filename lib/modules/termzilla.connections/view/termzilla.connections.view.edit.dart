@@ -4,10 +4,15 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:termzilla/modules/termzilla.connections/controller/termzilla.connections.controller.dart';
-import 'package:termzilla/modules/termzilla.homepage/controller/termzilla.homepage.controller.dart';
+import 'package:termzilla/shared/model/termzilla.connectioninfo.model.dart';
 
 class TermzillaConnectionsEditView extends StatefulWidget {
-  const TermzillaConnectionsEditView({Key? key}) : super(key: key);
+  final List<ConnectionInfo> _userConnectionInfos;
+
+  const TermzillaConnectionsEditView(
+      {Key? key, required List<ConnectionInfo> userConnectionInfos})
+      : _userConnectionInfos = userConnectionInfos,
+        super(key: key);
 
   @override
   _TermzillaConnectionsEditViewState createState() =>
@@ -29,7 +34,7 @@ class _TermzillaConnectionsEditViewState
   Widget build(BuildContext context) {
     return Dialog(
         child: SizedBox(
-            height: 600.0,
+            height: 500.0,
             width: 800.0,
             child: Scaffold(
               appBar: AppBar(
@@ -49,9 +54,7 @@ class _TermzillaConnectionsEditViewState
                       height: 600,
                       child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: TermzillaHomePageController()
-                            .connectionInfos
-                            .length,
+                        itemCount: widget._userConnectionInfos.length,
                         itemBuilder: (context, index) {
                           return ListTile(
                             leading: Icon(LineAwesomeIcons.plug,
@@ -69,12 +72,10 @@ class _TermzillaConnectionsEditViewState
                                 _selectedIndex = index;
                               });
                               _pageController.updateConnection(
-                                  TermzillaHomePageController()
-                                      .connectionInfos[index]);
+                                  widget._userConnectionInfos[index]);
                             },
                             title: Text(
-                              TermzillaHomePageController()
-                                  .connectionInfos[index]
+                              widget._userConnectionInfos[index]
                                   .nameOfTheConnection,
                               style: TextStyle(
                                   color: _selectedIndex == index
@@ -225,10 +226,14 @@ class ConnectionFormInfo extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  child: const Text("Submit"),
-                  onPressed: () => _pageController.saveConnection(context),
+                padding: const EdgeInsets.all(20.0),
+                child: SizedBox(
+                  width: 100,
+                  height: 40,
+                  child: ElevatedButton(
+                    child: const Text("Save"),
+                    onPressed: () => _pageController.saveConnection(context),
+                  ),
                 ),
               )
             ],

@@ -77,7 +77,12 @@ class _TermzillaHomePageViewState extends StateMVC<TermzillaHomePageView> {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return const TermzillaConnectionsEditView();
+                      return TermzillaConnectionsEditView(
+                          userConnectionInfos: _pageController.connectionInfos
+                              .where((element) =>
+                                  element.nameOfTheConnection !=
+                                  "Select a connection")
+                              .toList());
                     },
                   );
                 },
