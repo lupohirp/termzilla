@@ -21,9 +21,24 @@ class TermzillaSSHPageController extends ControllerMVC {
   late TabbedViewController tabbedViewController;
   Map<int, SSHClient> openedSSHClients = HashMap();
 
+  TabbedViewThemeData themeData =
+      TabbedViewThemeData.mobile(colorSet: Colors.blueGrey);
+
   @override
   void initState() {
     super.initState();
+    Radius radius = const Radius.circular(10.0);
+    BorderRadiusGeometry? borderRadius =
+        BorderRadius.only(topLeft: radius, topRight: radius);
+
+    themeData.tabsArea
+      ..initialGap = 20
+      ..middleGap = 5
+      ..minimalFinalGap = 5;
+    themeData.tab
+      ..padding = const EdgeInsets.only(top: 10)
+      ..buttonsOffset = 8
+      ..decoration = BoxDecoration(borderRadius: borderRadius);
     tabbedViewController = TabbedViewController(tabs);
   }
 

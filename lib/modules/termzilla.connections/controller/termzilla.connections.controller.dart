@@ -59,11 +59,11 @@ class TermzillaConnectionsController extends ControllerMVC {
     connectionInfoToUpdate = connectionInfo;
   }
 
-  Future<void> saveConnection(BuildContext context) async {
+  void saveConnection(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       context.loaderOverlay.show();
       if (connectionInfoToUpdate == null) {
-        await _saveConnection();
+        _saveConnection();
       } else {
         await Hive.openBox<ConnectionInfo>(HiveConst.connectionList,
             encryptionCipher: HiveAesCipher(TermzillaHelper.encryptionKey));
@@ -75,7 +75,7 @@ class TermzillaConnectionsController extends ControllerMVC {
           ConnectionInfo connectionInfo = connectionInfoBox.getAt(i)!;
           if (connectionInfo.nameOfTheConnection ==
               connectionInfoToUpdate?.nameOfTheConnection) {
-            await _updateThatConnection(connectionInfo, connectionInfoBox, i);
+            _updateThatConnection(connectionInfo, connectionInfoBox, i);
             break;
           }
         }
@@ -92,7 +92,7 @@ class TermzillaConnectionsController extends ControllerMVC {
     }
   }
 
-  Future<void> _updateThatConnection(ConnectionInfo connectionInfo,
+  void _updateThatConnection(ConnectionInfo connectionInfo,
       Box<ConnectionInfo> connectionInfoBox, int i) async {
     connectionInfo.ipAddress = ipAddressController.text;
     connectionInfo.nameOfTheConnection = nameOfTheConnectionController.text;
@@ -107,7 +107,7 @@ class TermzillaConnectionsController extends ControllerMVC {
     await connectionInfoBox.close();
   }
 
-  Future<void> _saveConnection() async {
+  void _saveConnection() async {
     String nameOfTheConnection = nameOfTheConnectionController.text;
     String ipAddress = ipAddressController.text;
     String port = portController.text;

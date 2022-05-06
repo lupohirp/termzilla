@@ -24,6 +24,6 @@ class _TermzillaSSHPageViewState extends StateMVC<TermzillaSSHPageView> {
             controller: _pageController.tabbedViewController,
             onTabClose: (tabIndex, tabData) =>
                 _pageController.closeConnection(tabIndex)),
-        data: TabbedViewThemeData.mobile(colorSet: Colors.blueGrey));
+        data: _pageController.themeData);
   }
 }

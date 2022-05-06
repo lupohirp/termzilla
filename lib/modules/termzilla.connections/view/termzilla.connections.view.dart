@@ -25,49 +25,80 @@ class _TermzillaConnectionsViewState
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      elevation: 20,
-      contentPadding: EdgeInsets.zero,
-      content: Builder(builder: ((context) {
-        return SizedBox(
-          height: MediaQuery.of(context).size.height < 1000
-              ? MediaQuery.of(context).size.height > 900 &&
-                      MediaQuery.of(context).size.height < 1000
-                  ? MediaQuery.of(context).size.height / 1.8
-                  : MediaQuery.of(context).size.height / 1.5
-              : MediaQuery.of(context).size.height / 2,
-          width: MediaQuery.of(context).size.width * 0.60,
-          child: Scaffold(
+    return Dialog(
+      child: SizedBox(
+        height: 600.0,
+        width: 600.0,
+        child: Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: false,
               title: const Center(child: Text("Add a new connection")),
             ),
-            body: Row(children: [
-              SideMenu(
-                  controller: PageController(),
-                  style: SideMenuStyle(
-                    displayMode: SideMenuDisplayMode.auto,
-                    hoverColor: Colors.blue[100],
-                    selectedColor: Theme.of(context).primaryColor,
-                    selectedTitleTextStyle:
-                        const TextStyle(color: Colors.white),
-                    iconSize: 24,
-                    selectedIconColor: Colors.white,
+            body: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  height: 400,
+                  width: 200,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount:
+                        TermzillaHomePageController().connectionInfos.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(TermzillaHomePageController()
+                            .connectionInfos[index]
+                            .nameOfTheConnection),
+                      );
+                    },
                   ),
-                  items: TermzillaHomePageController()
-                      .connectionInfos
-                      .map((e) => SideMenuItem(
-                          onTap: () => _pageController.updateConnection(e),
-                          title: e.nameOfTheConnection,
-                          priority: 1,
-                          icon: const Icon(LineAwesomeIcons.plug)))
-                      .toList()),
-              ConnectionFormInfo(pageController: _pageController),
-            ]),
-          ),
-        );
-      })),
+                )
+              ],
+            )),
+      ),
     );
+    // return AlertDialog(
+    //   elevation: 20,
+    //   contentPadding: EdgeInsets.zero,
+    //   content: Builder(builder: ((context) {
+    //     return SizedBox(
+    //       height: MediaQuery.of(context).size.height < 1000
+    //           ? MediaQuery.of(context).size.height > 900 &&
+    //                   MediaQuery.of(context).size.height < 1000
+    //               ? MediaQuery.of(context).size.height / 1.8
+    //               : MediaQuery.of(context).size.height / 1.5
+    //           : MediaQuery.of(context).size.height / 2,
+    //       width: MediaQuery.of(context).size.width * 0.60,
+    //       child: Scaffold(
+    //         appBar: AppBar(
+    //           automaticallyImplyLeading: false,
+    //           title: const Center(child: Text("Add a new connection")),
+    //         ),
+    //         body: Row(children: [
+    //           SideMenu(
+    //               controller: PageController(),
+    //               style: SideMenuStyle(
+    //                 hoverColor: Colors.blue[100],
+    //                 selectedColor: Theme.of(context).primaryColor,
+    //                 selectedTitleTextStyle:
+    //                     const TextStyle(color: Colors.white),
+    //                 iconSize: 24,
+    //                 selectedIconColor: Colors.white,
+    //               ),
+    //               items: TermzillaHomePageController()
+    //                   .connectionInfos
+    //                   .map((e) => SideMenuItem(
+    //                       onTap: () => _pageController.updateConnection(e),
+    //                       title: e.nameOfTheConnection,
+    //                       priority: 1,
+    //                       icon: const Icon(LineAwesomeIcons.plug)))
+    //                   .toList()),
+    //           ConnectionFormInfo(pageController: _pageController),
+    //         ]),
+    //       ),
+    //     );
+    //   })),
+    // );
   }
 }
 
