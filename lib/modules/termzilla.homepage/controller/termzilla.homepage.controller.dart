@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
@@ -18,6 +18,8 @@ class TermzillaHomePageController extends ControllerMVC {
   static TermzillaHomePageController? _this;
 
   PageController page;
+
+  int index = 0;
 
   List<ConnectionInfo> connectionInfos = List.empty(growable: true);
 

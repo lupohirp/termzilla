@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:fluent_ui/src/styles/theme.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
 import 'package:termzilla/modules/termzilla.homepage/view/termzilla.homepage.view.dart';
 import 'package:termzilla/shared/helper/termzilla.helper.dart';
 import 'package:termzilla/shared/model/termzilla.connectioninfo.model.dart';
@@ -23,11 +23,9 @@ class TermzillaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return FluentApp(
       title: 'Termzilla',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(accentColor: Colors.blue),
       home: const TermzillaHomePageView(),
     );
   }

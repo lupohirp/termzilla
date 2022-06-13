@@ -32,68 +32,48 @@ class _TermzillaConnectionsEditViewState
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
+    return Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.only(top: 16, right: 16),
         child: SizedBox(
-            height: 500.0,
-            width: 800.0,
-            child: Scaffold(
-              appBar: AppBar(
-                automaticallyImplyLeading: false,
-                actions: [
-                  IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(Icons.close))
-                ],
-                title: const Center(child: Text("Edit a connection")),
-              ),
-              body: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16, right: 16),
-                      child: SizedBox(
-                        width: 200,
-                        height: 600,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: widget._userConnectionInfos.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              leading: Icon(LineAwesomeIcons.plug,
-                                  color: index == _selectedIndex
-                                      ? Colors.white
-                                      : Colors.black),
-                              selected: index == _selectedIndex,
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(32),
-                                      bottomRight: Radius.circular(32))),
-                              selectedTileColor: Colors.blue,
-                              onTap: () {
-                                setState(() {
-                                  _pageController.textFieldsMustBeEnabled =
-                                      true;
-                                  _selectedIndex = index;
-                                });
-                                _pageController.updateConnection(
-                                    widget._userConnectionInfos[index]);
-                              },
-                              title: Text(
-                                widget._userConnectionInfos[index]
-                                    .nameOfTheConnection,
-                                style: TextStyle(
-                                    color: _selectedIndex == index
-                                        ? Colors.white
-                                        : Colors.black),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    ConnectionFormInfo(pageController: _pageController)
-                  ]),
-            )));
+          width: 200,
+          height: 600,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: widget._userConnectionInfos.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                leading: Icon(LineAwesomeIcons.plug,
+                    color:
+                        index == _selectedIndex ? Colors.white : Colors.black),
+                selected: index == _selectedIndex,
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(32),
+                        bottomRight: Radius.circular(32))),
+                selectedTileColor: Colors.blue,
+                onTap: () {
+                  setState(() {
+                    _pageController.textFieldsMustBeEnabled = true;
+                    _selectedIndex = index;
+                  });
+                  _pageController
+                      .updateConnection(widget._userConnectionInfos[index]);
+                },
+                title: Text(
+                  widget._userConnectionInfos[index].nameOfTheConnection,
+                  style: TextStyle(
+                      color: _selectedIndex == index
+                          ? Colors.white
+                          : Colors.black),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+      ConnectionFormInfo(pageController: _pageController)
+    ]);
   }
 }
 
