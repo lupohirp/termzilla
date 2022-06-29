@@ -1,3 +1,4 @@
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -71,7 +72,6 @@ class TermzillaConnectionsController extends ControllerMVC {
   }
 
   Future<void> deleteConnection() async {
-
     await Hive.openBox<ConnectionInfo>(HiveConst.connectionList,
         encryptionCipher: HiveAesCipher(TermzillaHelper.encryptionKey));
     Box<ConnectionInfo> connectionInfoBox =
@@ -90,7 +90,6 @@ class TermzillaConnectionsController extends ControllerMVC {
     await connectionInfoBox.delete(connectionInfoToDelete!.nameOfTheConnection);
     await connectionInfoBox.close();
 
-
     Navigator.of(state!.context).pop();
 
     ScaffoldMessenger.of(TermzillaHomePageController().state!.context)
@@ -101,7 +100,6 @@ class TermzillaConnectionsController extends ControllerMVC {
 
   void saveConnection() async {
     if (formKey.currentState!.validate()) {
-
       if (connectionInfoToUpdate == null) {
         await _saveConnection();
       } else {
@@ -122,11 +120,7 @@ class TermzillaConnectionsController extends ControllerMVC {
       }
 
       Navigator.of(state!.context).pop();
-
-      ScaffoldMessenger.of(TermzillaHomePageController().state!.context)
-          .showSnackBar(
-              const SnackBar(content: Text("Connection saved succesfully")));
-
+      TermzillaHomePageController().displayInfoBar("success");
       await TermzillaHomePageController()
           .triggerReloadStateFromConnectionsView();
     }

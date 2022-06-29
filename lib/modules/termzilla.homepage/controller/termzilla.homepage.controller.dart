@@ -21,6 +21,14 @@ class TermzillaHomePageController extends ControllerMVC {
 
   int index = 0;
 
+  bool _showSuccessInfoBar = false;
+
+  bool _showErrorInfoBar = false;
+
+  get showSuccessInfoBar => _showSuccessInfoBar;
+
+  get showErrorInfoBar => _showErrorInfoBar;
+
   List<ConnectionInfo> connectionInfos = List.empty(growable: true);
 
   ConnectionInfo selectedConnectionInfo = ConnectionInfo()
@@ -35,6 +43,16 @@ class TermzillaHomePageController extends ControllerMVC {
     super.initState();
     connectionInfos.add(selectedConnectionInfo);
     _loadPersonalConnections();
+  }
+
+  void displayInfoBar(String operation) {
+    if (operation == "success") {
+      _showSuccessInfoBar = true;
+      setState(() {});
+    } else if (operation == "error") {
+      _showErrorInfoBar = true;
+      setState(() {});
+    }
   }
 
   Future<void> triggerReloadStateFromConnectionsView() async {

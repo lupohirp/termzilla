@@ -4,6 +4,8 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:termzilla/modules/termzilla.connections/controller/termzilla.connections.controller.dart';
 import 'package:termzilla/modules/termzilla.connections/view/termzilla.connections.view.add.dart';
 import 'package:termzilla/modules/termzilla.homepage/controller/termzilla.homepage.controller.dart';
+import 'package:termzilla/modules/termzilla.homepage/view/widgets/add_connections_dialog.dart';
+import 'package:termzilla/modules/termzilla.homepage/view/widgets/dropdown_flyout_connections_list.dart';
 import 'package:termzilla/modules/termzilla.ssh/controller/termzilla.ssh.controller.dart';
 import 'package:termzilla/shared/model/termzilla.connectioninfo.model.dart';
 
@@ -30,64 +32,21 @@ class _TermzillaHomePageViewState extends StateMVC<TermzillaHomePageView> {
           actions: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Flyout(
-                  controller: _pageController.flyoutController,
-                  child: FilledButton(
-                      child: const Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Text("Select a Connection"),
-                      ),
-                      onPressed: _pageController.flyoutController.open),
-                  content: (context) {
-                    return MenuFlyout(
-                        items: _pageController.connectionInfos
-                            .map((ConnectionInfo connectionInfo) {
-                      return MenuFlyoutItem(
-                        onPressed: () {},
-                        text: Text(connectionInfo.nameOfTheConnection),
-                      );
-                    }).toList());
-                  }),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: FilledButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (BuildContext context) {
-                          return ContentDialog(
-                              actions: [
-                                FilledButton(
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text("Save"),
-                                    ),
-                                    onPressed: () =>
-                                        TermzillaConnectionsController()
-                                            .saveConnection()),
-                              ],
-                              constraints: const BoxConstraints(
-                                  minWidth: 200,
-                                  maxWidth: 1000,
-                                  minHeight: 810,
-                                  maxHeight: 900),
-                              title: const Text("Add a new connection"),
-                              content: const TermzillaConnectionsAddView());
-                        },
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Row(children: const [
-                        Icon(FluentIcons.add_connection),
-                        SizedBox(width: 10),
-                        Text("Add a new connection")
-                      ]),
-                    )),
-              )
+              DropDownConnectionsMenuFlyout(pageController: _pageController),
+              const AddConnectionsDialog()
             ],
           )),
+      content: NavigationBody.builder(
+          transitionBuilder: (child, animation) =>
+              EntrancePageTransition(child: child, animation: animation),
+          index: _pageController.index,
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return const Text("Page 0");
+            } else {
+              return const Text("Page 1");
+            }
+          }),
       pane: NavigationPane(
         /// The current selected index
         selected: _pageController.index,
