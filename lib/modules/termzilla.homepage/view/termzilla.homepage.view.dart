@@ -1,13 +1,12 @@
+import 'dart:ffi';
+
 import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:mvc_pattern/mvc_pattern.dart';
-import 'package:termzilla/modules/termzilla.connections/controller/termzilla.connections.controller.dart';
-import 'package:termzilla/modules/termzilla.connections/view/termzilla.connections.view.add.dart';
 import 'package:termzilla/modules/termzilla.homepage/controller/termzilla.homepage.controller.dart';
 import 'package:termzilla/modules/termzilla.homepage/view/widgets/add_connections_dialog.dart';
 import 'package:termzilla/modules/termzilla.homepage/view/widgets/dropdown_flyout_connections_list.dart';
-import 'package:termzilla/modules/termzilla.ssh/controller/termzilla.ssh.controller.dart';
-import 'package:termzilla/shared/model/termzilla.connectioninfo.model.dart';
+import 'package:termzilla/modules/termzilla.ssh/view/termzilla.ssh.view.dart';
 
 class TermzillaHomePageView extends StatefulWidget {
   const TermzillaHomePageView({Key? key}) : super(key: key);
@@ -42,9 +41,15 @@ class _TermzillaHomePageViewState extends StateMVC<TermzillaHomePageView> {
           index: _pageController.index,
           itemBuilder: (context, index) {
             if (index == 0) {
-              return const Text("Page 0");
+              return const SizedBox(
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: TermzillaSSHPageView());
             } else {
-              return const Text("Page 1");
+              return const SizedBox(
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: Text("Page 1"));
             }
           }),
       pane: NavigationPane(

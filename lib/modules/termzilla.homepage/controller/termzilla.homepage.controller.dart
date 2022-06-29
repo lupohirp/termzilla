@@ -21,14 +21,6 @@ class TermzillaHomePageController extends ControllerMVC {
 
   int index = 0;
 
-  bool _showSuccessInfoBar = false;
-
-  bool _showErrorInfoBar = false;
-
-  get showSuccessInfoBar => _showSuccessInfoBar;
-
-  get showErrorInfoBar => _showErrorInfoBar;
-
   List<ConnectionInfo> connectionInfos = List.empty(growable: true);
 
   ConnectionInfo selectedConnectionInfo = ConnectionInfo()
@@ -47,11 +39,22 @@ class TermzillaHomePageController extends ControllerMVC {
 
   void displayInfoBar(String operation) {
     if (operation == "success") {
-      _showSuccessInfoBar = true;
-      setState(() {});
+      showSnackbar(
+        state!.context,
+        const Snackbar(
+          action: Text("Ok"),
+          content: Text('Connections saved succesfully'),
+        ),
+      );
     } else if (operation == "error") {
-      _showErrorInfoBar = true;
-      setState(() {});
+      showSnackbar(
+        state!.context,
+        const Snackbar(
+          content: Text('Error while saving connection'),
+        ),
+        duration: const Duration(seconds: 5),
+        margin: const EdgeInsets.all(24.0),
+      );
     }
   }
 

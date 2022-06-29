@@ -1,10 +1,12 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:dartssh2/dartssh2.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
@@ -18,23 +20,35 @@ class TermzillaSSHPageController extends ControllerMVC {
 
   static TermzillaSSHPageController? _this;
 
-  List<Tab> tabs = List.empty(growable: true);
-
   Map<int, SSHClient> openedSSHClients = HashMap();
 
   int currentIndex = 0;
 
+  List<Tab>? tabs;
+  List<Widget>? bodies;
+
   @override
   void initState() {
     super.initState();
-    Radius radius = const Radius.circular(10.0);
-    BorderRadiusGeometry? borderRadius =
-        BorderRadius.only(topLeft: radius, topRight: radius);
-
+    tabs ??= List.generate(3, (index) {
+      late Tab tab;
+      tab = Tab(
+        text: Text('Document $index'),
+        semanticLabel: 'Document #$index',
+        onClosed: () => tabs!.remove(tab),
+      );
+      return tab;
+    });
+    bodies ??= List.generate(3, (index) {
+      return Container(
+        color:
+            Colors.accentColors[Random().nextInt(Colors.accentColors.length)],
+      );
+    });
   }
 
   void removeConnectionTab(int indexToRemove) {
-    tabs.removeAt(indexToRemove);
+    //tabs.removeAt(indexToRemove);
     closeConnection(indexToRemove);
     setState(() {});
   }
@@ -43,8 +57,6 @@ class TermzillaSSHPageController extends ControllerMVC {
     openedSSHClients[tabIndex]?.close();
     openedSSHClients.remove(tabIndex);
   }
-
-
 
   // Future<void> addConnectionTab(
   //     ConnectionInfo connectionInfo, BuildContext buildContext) async {
@@ -130,27 +142,27 @@ class TermzillaSSHPageController extends ControllerMVC {
   //   return null;
   // }
 
-  void _handleTimeoutException(ConnectionInfo connectionInfo) {
-    showDialog(
-        context: state!.context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            actions: [
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text("OK"))
-            ],
-            content: Row(children: [
-              const Icon(LineAwesomeIcons.unlink),
-              const SizedBox(
-                width: 50,
-              ),
-              Text(
-                  "Unable to connect to ${connectionInfo.ipAddress}. Please check if the address or port is correct or it is up and running")
-            ]),
-          );
-        });
-  }
+  // void _handleTimeoutException(ConnectionInfo connectionInfo) {
+  //   showDialog(
+  //       context: state!.context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           actions: [
+  //             ElevatedButton(
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                 },
+  //                 child: const Text("OK"))
+  //           ],
+  //           content: Row(children: [
+  //             const Icon(LineAwesomeIcons.unlink),
+  //             const SizedBox(
+  //               width: 50,
+  //             ),
+  //             Text(
+  //                 "Unable to connect to ${connectionInfo.ipAddress}. Please check if the address or port is correct or it is up and running")
+  //           ]),
+  //         );
+  //       });
+  // }
 }
