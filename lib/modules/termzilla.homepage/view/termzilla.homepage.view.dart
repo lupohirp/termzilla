@@ -1,9 +1,11 @@
 import 'package:fluent_ui/fluent_ui.dart';
+
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:termzilla/modules/termzilla.connections/controller/termzilla.connections.controller.dart';
 import 'package:termzilla/modules/termzilla.connections/view/termzilla.connections.view.add.dart';
-import 'package:termzilla/modules/termzilla.connections/view/termzilla.connections.view.edit.dart';
 import 'package:termzilla/modules/termzilla.homepage/controller/termzilla.homepage.controller.dart';
+import 'package:termzilla/modules/termzilla.ssh/controller/termzilla.ssh.controller.dart';
+import 'package:termzilla/shared/model/termzilla.connectioninfo.model.dart';
 
 class TermzillaHomePageView extends StatefulWidget {
   const TermzillaHomePageView({Key? key}) : super(key: key);
@@ -26,9 +28,26 @@ class _TermzillaHomePageViewState extends StateMVC<TermzillaHomePageView> {
           height: 75,
           automaticallyImplyLeading: false,
           actions: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const Spacer(),
+              Flyout(
+                  controller: _pageController.flyoutController,
+                  child: FilledButton(
+                      child: const Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Text("Select a Connection"),
+                      ),
+                      onPressed: _pageController.flyoutController.open),
+                  content: (context) {
+                    return MenuFlyout(
+                        items: _pageController.connectionInfos
+                            .map((ConnectionInfo connectionInfo) {
+                      return MenuFlyoutItem(
+                        onPressed: () {},
+                        text: Text(connectionInfo.nameOfTheConnection),
+                      );
+                    }).toList());
+                  }),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: FilledButton(
@@ -39,23 +58,20 @@ class _TermzillaHomePageViewState extends StateMVC<TermzillaHomePageView> {
                         builder: (BuildContext context) {
                           return ContentDialog(
                               actions: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: FilledButton(
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Text("Save"),
-                                      ),
-                                      onPressed: () =>
-                                          TermzillaConnectionsController()
-                                              .saveConnection()),
-                                )
+                                FilledButton(
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text("Save"),
+                                    ),
+                                    onPressed: () =>
+                                        TermzillaConnectionsController()
+                                            .saveConnection()),
                               ],
                               constraints: const BoxConstraints(
                                   minWidth: 200,
                                   maxWidth: 1000,
-                                  minHeight: 200,
-                                  maxHeight: 800),
+                                  minHeight: 810,
+                                  maxHeight: 900),
                               title: const Text("Add a new connection"),
                               content: const TermzillaConnectionsAddView());
                         },

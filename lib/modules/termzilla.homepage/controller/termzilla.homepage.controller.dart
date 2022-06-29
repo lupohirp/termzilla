@@ -26,6 +26,8 @@ class TermzillaHomePageController extends ControllerMVC {
   ConnectionInfo selectedConnectionInfo = ConnectionInfo()
     ..nameOfTheConnection = "Select a connection";
 
+  final flyoutController = FlyoutController();
+
   @override
   void initState() {
     /// Look inside the parent function and see it calls

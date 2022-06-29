@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:termzilla/modules/termzilla.connections/controller/termzilla.connections.controller.dart';
 import 'package:termzilla/shared/model/termzilla.connectioninfo.model.dart';
@@ -89,7 +88,6 @@ class ConnectionFormInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Flexible(
-      child: LoaderOverlay(
         child: Form(
           key: _pageController.formKey,
           child: Column(
@@ -257,7 +255,7 @@ class ConnectionFormInfo extends StatelessWidget {
             ],
           ),
         ),
-      ),
+
     );
   }
 }
