@@ -16,11 +16,10 @@ class _TabbedConnectionsState extends State<TabbedConnections> {
   @override
   Widget build(BuildContext context) {
     return TabView(
-        currentIndex: _connectionViewController.currentIndex,
+        currentIndex: _connectionViewController.currentIndex.value,
         tabs: _connectionViewController.tabs!,
         tabWidthBehavior: TabWidthBehavior.equal,
         showScrollButtons: true,
-        onChanged: (index) =>
-            setState(() => _connectionViewController.currentIndex = index));
+        onChanged: (index) => Obx(()=>_connectionViewController.currentIndex.value = index);
   }
 }
